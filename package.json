@@ -1,0 +1,20 @@
+{
+  "name": "plato-texts",
+  "version": "1.0.0",
+  "description": "An npm package to extract specific texts from Plato in the Scaife Viewer.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "plato",
+    "philosophy",
+    "greek"
+  ],
+  "author": "Justin Keena",
+  "license": "ISC",
+  "dependencies": {
+    "xmldoc": "^1.1.2",
+    "xmldom": "^0.1.27"
+  }
+}
