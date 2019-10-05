@@ -1,11 +1,19 @@
 const https = require('https');
 const xmldoc = require("xmldoc");
+const inquirer = require ("inquirer");
 
 // Build url
-const queryURL = "https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg001.perseus-grc1:2";
+const queryURL = "https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg030.perseus-grc2:1.327";
 // Euthyphro test: https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg001.perseus-grc1:2
 // Republic test: https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg030.perseus-grc2:1.327
 
+// Temp object to store results of async call in
+let textsRequested = {
+    "dialogue": "",
+    "texts": []
+}
+
+// async https request using module built-in to node
 https.get(queryURL, (resp) => {
     let data = '';
 
@@ -36,15 +44,47 @@ https.get(queryURL, (resp) => {
         const allParagraphs = result.childrenNamed("p");
         // console.log(allParagraphs.toString());
 
-        for (let i=0; i < allParagraphs.length; i++) {
-            console.log(allParagraphs[i].toString());
-
-            // check for speakers
-            // check for milestones
-            // separate milestones in temporary object in higher scope
+        // build object to push to higher scope temp object
+        const newText = {
+            stephanus: "",
+            text: ""
 
         }
 
+        for (let i=0; i < allParagraphs.length; i++) {
+            // console.log(allParagraphs[i].toString());
+
+            // check for speakers
+            const textWithSpeaker = allParagraphs[i].childNamed("said");
+            
+            // if there is a speaker, log the speaker and check for milestone within "said" node
+            if (textWithSpeaker) {
+                // extract speaker
+                let speaker = textWithSpeaker.attr.who;
+                speaker = speaker.slice(1)
+                console.log(speaker);
+                
+                // extract new stephanus milestone, if there is one
+                const newSection = allParagraphs[i].childNamed("said").childWithAttribute("unit", "section")
+                if (newSection) {
+                    const stephanus = newSection.attr.n
+                    console.log(stephanus)
+                }
+                
+            } else {
+                // since there is no speaker, check for milestones directly in the "p" node
+                const newSection = allParagraphs[i].childWithAttribute("unit", "section");
+                if (newSection) {
+                    const stephanus = newSection.attr.n;
+                    console.log(stephanus)
+                } 
+
+            }
+
+            // if a new milestone is found, put what's been stored in higher scope
+            // separate milestones in temporary object in higher scope
+
+        }
 
     });
 
