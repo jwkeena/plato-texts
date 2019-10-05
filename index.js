@@ -3,7 +3,7 @@ const xmldoc = require("xmldoc");
 const inquirer = require ("inquirer");
 
 // Build url
-const queryURL = "https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg030.perseus-grc2:1.327";
+const queryURL = "https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg001.perseus-grc1:2";
 // Euthyphro test: https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg001.perseus-grc1:2
 // Republic test: https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg030.perseus-grc2:1.327
 
@@ -53,8 +53,7 @@ https.get(queryURL, (resp) => {
                 // extract label for speaker, if there is one; attach this to the text found
                 let label;
                 if (textWithSpeaker.childNamed("label")) {
-                    label = textWithSpeaker.childNamed("label")
-                    console.log(label);
+                    label = textWithSpeaker.childNamed("label").val
                 };
 
                 // extract new stephanus milestone, if there are any
@@ -73,7 +72,6 @@ https.get(queryURL, (resp) => {
 
                     // if it's a text node, capture the text
                     if (allChildren[j].text) {
-                        console.log(allChildren[j].text)
                         let newText;
                         // concatenate label to text, if there is a label
                         if (label) {
@@ -81,7 +79,12 @@ https.get(queryURL, (resp) => {
                         } else {
                             newText = allChildren[j].text;
                         }
-                        textsFound[currentStephanus] = textsFound[currentStephanus] + newText
+                        // concatenate text to what's already in textsFound; otherwise, create new key value pair
+                        if (textsFound[currentStephanus]) {
+                            textsFound[currentStephanus] += newText.trim();
+                        } else {
+                            textsFound[currentStephanus] = newText.trim();
+                        }
                     }
                 }
 
@@ -89,23 +92,33 @@ https.get(queryURL, (resp) => {
                 // since there is no speaker, check for milestones directly in the "p" node
                 // but since there could be multiple milestones in the same "p" node, we have to put all the children in an array first, and capture the texts and stephanus numbers as they come
                 const allChildren = allParagraphs[i].children;
-                console.log(allChildren);
-                
-                const newSection = allParagraphs[i].childWithAttribute("unit", "section");
-                if (newSection) {
-                    const stephanus = newSection.attr.n;
-                    console.log(stephanus)
-                } 
+                for (let j = 0; j < allChildren.length; j++) {
+                    
+                    // if it's an element node, and that node contains a new section, capture the stephanus number and letter
+                    if (allChildren[j].attr) {
+                        if (allChildren[j].attr.unit === "section") {
+                            const stephanus = allChildren[j].attr.n;
+                            currentStephanus = stephanus;
+                            console.log("currentStephanus", currentStephanus)
+                        }
+                    }
 
-                // then store all information found in higher scope
-                const newText = allParagraphs[i].val;
-                console.log(newText)
+                    // if it's a text node, capture the text
+                    if (allChildren[j].text) {
+                        console.log(allChildren[j].text)
+                        let newText;
+                        newText = allChildren[j].text;
+                        // concatenate text to what's already in textsFound; otherwise, create new key value pair
+                        if (textsFound[currentStephanus]) {
+                            textsFound[currentStephanus] += newText.trim();
+                        } else {
+                            textsFound[currentStephanus] = newText.trim();
+                        }
+                    }
+                }
             }
-
             console.log(textsFound)
-
         }
-
     });
 
 }).on("error", (err) => {
