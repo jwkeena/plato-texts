@@ -3,14 +3,14 @@ const xmldoc = require("xmldoc");
 const inquirer = require ("inquirer");
 
 // Build url
-const queryURL = "https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg001.perseus-grc1:2";
+const queryURL = "https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg002.perseus-grc2:17";
 // Euthyphro test: https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg001.perseus-grc1:2
 // Republic test: https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg030.perseus-grc2:1.327
+// Apology test: https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg002.perseus-grc2:17
 
 // Temp object to store results of async call in
 let textsFound = [];
 let currentStephanus = "";
-let currentSpeaker = "";
 
 // async https request using module built-in to node
 https.get(queryURL, (resp) => {
@@ -105,7 +105,6 @@ https.get(queryURL, (resp) => {
 
                     // if it's a text node, capture the text
                     if (allChildren[j].text) {
-                        console.log(allChildren[j].text)
                         let newText;
                         newText = allChildren[j].text;
                         // concatenate text to what's already in textsFound; otherwise, create new key value pair
