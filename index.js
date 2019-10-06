@@ -370,13 +370,17 @@ function getText() {
                             let newText;
                             // concatenate label to text, if there is a label
                             if (label) {
-                                newText = label + allChildren[j].text
+                                newText = label.trim() + " " + allChildren[j].text.trim();
                             } else {
-                                newText = allChildren[j].text;
+                                newText = allChildren[j].text.trim();
                             }
+
+                            // strip out line breaks 
+                            newText = newText.replace(/(\r\n|\n|\r)/gm,"");
+
                             // concatenate text to what's already in textsFound; otherwise, create new key value pair
                             if (textsFound[currentStephanus]) {
-                                textsFound[currentStephanus] += newText.trim();
+                                textsFound[currentStephanus] += newText.trim() + " ";
                             } else {
                                 textsFound[currentStephanus] = newText.trim();
                             }
@@ -400,7 +404,7 @@ function getText() {
                         // if it's a text node, capture the text
                         if (allChildren[j].text) {
                             let newText;
-                            newText = allChildren[j].text;
+                            newText = allChildren[j].text.trim();
                             // concatenate text to what's already in textsFound; otherwise, create new key value pair
                             if (textsFound[currentStephanus]) {
                                 textsFound[currentStephanus] += newText.trim();
@@ -415,7 +419,12 @@ function getText() {
             // Depending on the type of search input, either give a single section or a whole section
             if (userStephanusLetter && typeOfResult === "book") {
                 // Removes book number and period from search, to access in temp object
-                userStephanus = userStephanus.slice(2)
+                if (!isNaN(userStephanus.charAt(1))) {
+                    userStephanus = userStephanus.slice(3) // Cuts out both digits if it's book 10, 11, or 12
+                } else {
+                    userStephanus = userStephanus.slice(2)
+                }
+                
                 console.log("Passage requested: " + userDialogue + " " + userStephanus + userStephanusLetter)
                 console.log(textsFound[userStephanus + userStephanusLetter])
             } else if (userStephanusLetter) {
