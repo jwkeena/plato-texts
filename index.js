@@ -288,16 +288,17 @@ function getText() {
             return;
     }
 
-    // Adding dialogue chosen
+    // Adding dialogue chosen to search url
     let queryURL = "https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059." + perseusDialogueMarker;
+
     // For some reason the Euthyphro, dialogue tlg001, is in the perseus-grc1 route, not perseus-grc2
-    if (perseusDialogueMarker === "01") {
+    if (perseusDialogueMarker === "tlg001") {
         queryURL += ".perseus-grc1:";
     } else {
         queryURL += ".perseus-grc2:";
     }
 
-    // Adding stephanus chosen
+    // Adding stephanus chosen to url
     queryURL += userStephanus;
     console.log(queryURL)
 
@@ -307,7 +308,6 @@ function getText() {
         let textsFound = [];
         let currentStephanus;
         let typeOfResult;
-        
         let data = '';
     
         // A chunk of data has been recieved
@@ -324,11 +324,11 @@ function getText() {
     
             // check for book
             if (result.childWithAttribute("subtype").attr.subtype === "book") {
-                console.log("book found"); // add two more layers deep to the xml tree
+                // add two more layers deep to the xml tree
                 typeOfResult = "book"
                 result = document.childNamed("reply").childNamed("passage").childNamed("TEI").childNamed("text").childNamed("body").childNamed("div").childNamed("div").childNamed("div");
             } else if (result.childWithAttribute("subtype").attr.subtype === "section") {
-                console.log("section found"); // add one more layer deep to the xml tree
+                // add one more layer deep to the xml tree
                 typeOfResult = "section"
                 result = document.childNamed("reply").childNamed("passage").childNamed("TEI").childNamed("text").childNamed("body").childNamed("div").childNamed("div");
             } else {
@@ -416,13 +416,14 @@ function getText() {
             if (userStephanusLetter && typeOfResult === "book") {
                 // Removes book number and period from search, to access in temp object
                 userStephanus = userStephanus.slice(2)
-                console.log("Passage requested:", userStephanus + userStephanusLetter)
+                console.log("Passage requested: " + userDialogue + " " + userStephanus + userStephanusLetter)
                 console.log(textsFound[userStephanus + userStephanusLetter])
             } else if (userStephanusLetter) {
-                console.log("Passage requested: ", userStephanus + userStephanusLetter)
+                console.log("Passage requested: " + userDialogue + " " + userStephanus + userStephanusLetter)
                 console.log(textsFound[userStephanus + userStephanusLetter])
             } else {
                 // return entire stephanus number
+                console.log(textsFound);
             }
         });
     
