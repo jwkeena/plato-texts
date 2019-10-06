@@ -4,7 +4,20 @@ const xmldoc = require("xmldoc");
 function getText() {
     // Build url from process.argv
     const userDialogue = process.argv[2].toLowerCase().trim();
-    const userStephanus = process.argv[3].trim();
+    
+    // Check for stephanus number and letter; if so, separate them
+    let userStephanus = process.argv[3].toLowerCase().trim();
+    let lastChar = userStephanus[userStephanus.length - 1];
+    let userStephanusLetter;
+    if (lastChar === "a" || lastChar === "b" || lastChar === "c" || lastChar === "d" || lastChar == "e") {
+        userStephanus = userStephanus.slice(0, userStephanus.length -1)
+        userStephanusLetter = lastChar;
+    } else {
+        if (isNaN(lastChar)) {
+            console.log("Search only accepts a-e in final Stephanus position; canceling search.")
+            return;
+        }
+    } 
 
     let perseusDialogueMarker = "tlg0"
     switch (userDialogue) {
@@ -43,7 +56,7 @@ function getText() {
         case "apol":
         case "apo.":
         case "apo":
-            perseusDialogueMarker += "14";
+            perseusDialogueMarker += "02";
             break;
 
         case "charmides":
@@ -292,7 +305,8 @@ function getText() {
     https.get(queryURL, (resp) => {
         // Temp object to store results of async call in
         let textsFound = [];
-        let currentStephanus = "";
+        let currentStephanus;
+        let typeOfResult;
         
         let data = '';
     
@@ -311,12 +325,14 @@ function getText() {
             // check for book
             if (result.childWithAttribute("subtype").attr.subtype === "book") {
                 console.log("book found"); // add two more layers deep to the xml tree
+                typeOfResult = "book"
                 result = document.childNamed("reply").childNamed("passage").childNamed("TEI").childNamed("text").childNamed("body").childNamed("div").childNamed("div").childNamed("div");
             } else if (result.childWithAttribute("subtype").attr.subtype === "section") {
                 console.log("section found"); // add one more layer deep to the xml tree
+                typeOfResult = "section"
                 result = document.childNamed("reply").childNamed("passage").childNamed("TEI").childNamed("text").childNamed("body").childNamed("div").childNamed("div");
             } else {
-                console.log("unknown organization", result.childWithAttribute("subtype").attr.subtype);
+                console.log("unknown organization found", result.childWithAttribute("subtype").attr.subtype);
             }
     
             // extract info (text, speakers, stephanus numbers) from each paragraph
@@ -346,7 +362,6 @@ function getText() {
                             if (allChildren[j].attr.unit === "section") {
                                 const stephanus = allChildren[j].attr.n;
                                 currentStephanus = stephanus;
-                                console.log("currentStephanus", currentStephanus)
                             }
                         }
     
@@ -379,7 +394,6 @@ function getText() {
                             if (allChildren[j].attr.unit === "section") {
                                 const stephanus = allChildren[j].attr.n;
                                 currentStephanus = stephanus;
-                                console.log("currentStephanus", currentStephanus)
                             }
                         }
     
@@ -397,7 +411,19 @@ function getText() {
                     }
                 }
             }
-            console.log(textsFound);
+
+            // Depending on the type of search input, either give a single section or a whole section
+            if (userStephanusLetter && typeOfResult === "book") {
+                // Removes book number and period from search, to access in temp object
+                userStephanus = userStephanus.slice(2)
+                console.log("Passage requested:", userStephanus + userStephanusLetter)
+                console.log(textsFound[userStephanus + userStephanusLetter])
+            } else if (userStephanusLetter) {
+                console.log("Passage requested: ", userStephanus + userStephanusLetter)
+                console.log(textsFound[userStephanus + userStephanusLetter])
+            } else {
+                // return entire stephanus number
+            }
         });
     
     }).on("error", (err) => {
