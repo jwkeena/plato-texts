@@ -14,7 +14,6 @@
   "author": "Justin Keena",
   "license": "ISC",
   "dependencies": {
-    "inquirer": "^7.0.0",
     "xmldoc": "^1.1.2",
     "xmldom": "^0.1.27"
   }
