@@ -384,7 +384,7 @@ function getText() {
                                     // Removes book number and period from search
                                     if ((userStephanus.charAt(1) === ".") || (userStephanus.charAt(2)) === ".") {
                                         userStephanus = userStephanus.slice(3) // Cuts out both digits if it's book 10, 11, or 12
-                                    } else if (userStephanus.length > 1) { // Doesn't touch single numbers, e.g. in Euthyphro
+                                    } else if (userStephanus.length > 1 && typeOfResult === "book") { // Doesn't touch single numbers, e.g. in Euthyphro
                                         userStephanus = userStephanus.slice(2)
                                     } 
 
