@@ -10,7 +10,7 @@ function getText() {
     let lastChar = userStephanus[userStephanus.length - 1];
     let userStephanusLetter;
     if (lastChar === "a" || lastChar === "b" || lastChar === "c" || lastChar === "d" || lastChar == "e") {
-        userStephanus = userStephanus.slice(0, userStephanus.length -1)
+        userStephanus = userStephanus.slice(0, userStephanus.length -1);
         userStephanusLetter = lastChar;
     } else {
         if (isNaN(lastChar)) {
@@ -284,7 +284,7 @@ function getText() {
             perseusDialogueMarker += "31";
             break;
         default: 
-            console.log("dialogue not recognized; canceling request");
+            console.log("Dialogue not recognized; canceling request");
             return;
     }
 
@@ -300,7 +300,6 @@ function getText() {
 
     // Adding stephanus chosen to url
     queryURL += userStephanus;
-    console.log(queryURL)
 
     // async https request using module built-in to node
     https.get(queryURL, (resp) => {
@@ -318,7 +317,6 @@ function getText() {
         // The whole response has been received
         resp.on('end', () => {
             const document = new xmldoc.XmlDocument(data); // to pretty print xmldoc parsing of data: console.log(document.toString({trimmed: true}));
-    
             // cut directly to the relevant parts of xml response
             let result = document.childNamed("reply").childNamed("passage").childNamed("TEI").childNamed("text").childNamed("body").childNamed("div");
     
@@ -382,7 +380,20 @@ function getText() {
                             if (textsFound[currentStephanus]) {
                                 textsFound[currentStephanus] += newText.trim() + " ";
                             } else {
-                                textsFound[currentStephanus] = newText.trim();
+                                if (currentStephanus === undefined) {
+                                    // Removes book number and period from search
+                                    if ((userStephanus.charAt(1) === ".") || (userStephanus.charAt(2)) === ".") {
+                                        userStephanus = userStephanus.slice(3) // Cuts out both digits if it's book 10, 11, or 12
+                                    } else if (userStephanus.length > 1) { // Doesn't touch single numbers, e.g. in Euthyphro
+                                        userStephanus = userStephanus.slice(2)
+                                    } 
+
+                                    // Calculate what the previous stephanus number is, immediately prior to user search
+                                    currentStephanus = ((parseInt(userStephanus) - 1)) + "e";
+                                    textsFound[currentStephanus] = newText.trim(); 
+                                } else {
+                                    textsFound[currentStephanus] = newText.trim();
+                                }
                             }
                         }
                     }
@@ -409,7 +420,20 @@ function getText() {
                             if (textsFound[currentStephanus]) {
                                 textsFound[currentStephanus] += newText.trim();
                             } else {
-                                textsFound[currentStephanus] = newText.trim();
+                                if (currentStephanus === undefined) {
+                                    // Removes book number and period from search
+                                        if ((userStephanus.charAt(1) === ".") || (userStephanus.charAt(2)) === ".") {
+                                        userStephanus = userStephanus.slice(3) // Cuts out both digits if it's book 10, 11, or 12
+                                    } else if (userStephanus.length > 1) { // Doesn't touch single numbers, e.g. in Euthyphro
+                                        userStephanus = userStephanus.slice(2)
+                                    }
+
+                                    // Calculate what the previous stephanus number is, immediately prior to user search
+                                    currentStephanus = ((parseInt(userStephanus) - 1)) + "e";
+                                    textsFound[currentStephanus] = newText.trim(); 
+                                } else {
+                                    textsFound[currentStephanus] = newText.trim();
+                                }
                             }
                         }
                     }
@@ -418,21 +442,15 @@ function getText() {
 
             // Depending on the type of search input, either give a single section or a whole section
             if (userStephanusLetter && typeOfResult === "book") {
-                // Removes book number and period from search, to access in temp object
-                if (!isNaN(userStephanus.charAt(1))) {
-                    userStephanus = userStephanus.slice(3) // Cuts out both digits if it's book 10, 11, or 12
-                } else {
-                    userStephanus = userStephanus.slice(2)
-                }
-                
-                console.log("Passage requested: " + userDialogue + " " + userStephanus + userStephanusLetter)
-                console.log(textsFound[userStephanus + userStephanusLetter])
+                console.log("\n" + textsFound[userStephanus + userStephanusLetter])
+                console.log("\nPassage requested: " + userDialogue + " " + userStephanus + userStephanusLetter + " at " + queryURL)
             } else if (userStephanusLetter) {
-                console.log("Passage requested: " + userDialogue + " " + userStephanus + userStephanusLetter)
-                console.log(textsFound[userStephanus + userStephanusLetter])
+                console.log("\n" + textsFound[userStephanus + userStephanusLetter])
+                console.log("\nPassage requested: " + userDialogue + " " + userStephanus + userStephanusLetter + " at " + queryURL)
             } else {
                 // return entire stephanus number
                 console.log(textsFound);
+                console.log("\nPassage requested: " + userDialogue + " " + userStephanus + " at " + queryURL)
             }
         });
     
