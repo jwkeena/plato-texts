@@ -576,17 +576,17 @@ function getPlatoText(userDialogue, userStephanus) {
 
             // Depending on the type of search input, either give a single section or a whole section
             if (userStephanusLetter && typeOfResult === "book") {
-                console.log("Passage requested: " + dialogueName + " " + userStephanus + userStephanusLetter + " at " + queryURL)
                 console.log(textsFound[userStephanus + userStephanusLetter])
+                console.log("Passage requested: " + dialogueName + " " + userStephanus + userStephanusLetter + " at " + queryURL)
                 return (textsFound[userStephanus + userStephanusLetter])
             } else if (userStephanusLetter) {
-                console.log("Passage requested: " + dialogueName + " " + userStephanus + userStephanusLetter + " at " + queryURL)
                 console.log(textsFound[userStephanus + userStephanusLetter])
+                console.log("Passage requested: " + dialogueName + " " + userStephanus + userStephanusLetter + " at " + queryURL)
                 return (textsFound[userStephanus + userStephanusLetter])
             } else {
                 // return entire stephanus number
-                console.log("Passage requested: " + dialogueName + " " + userStephanus + " at " + queryURL)
                 console.log(textsFound);
+                console.log("Passage requested: " + dialogueName + " " + userStephanus + " at " + queryURL)
                 return textsFound;
             }
         });
