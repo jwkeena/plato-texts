@@ -1,6 +1,6 @@
 {
   "name": "plato-texts",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "An npm package to extract specific texts from Plato in the Scaife Viewer API (Perseus Project 5.0).",
   "main": "index.js",
   "scripts": {

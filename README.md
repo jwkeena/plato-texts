@@ -8,7 +8,7 @@ npm i plato-texts
 ```
 
 # How to Use
-This tool exposes a single function, getPlatoText, which accepts two arguments: first, the dialogue name, which is required; second, the Stephanus number, which is optional.  
+This tool exposes a single function, getPlatoText, which accepts two arguments, each of them strings: first, the dialogue name, which is required; second, the Stephanus number and section, which is optional.  
 
 # Example Usage
 ```javascript
@@ -21,24 +21,25 @@ Returns:
   * Passage requested: Apology 17a at https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg002.perseus-grc2:17
 
 
-# Other Options
-* Simply typing in the dialogue name, without any Stephanus number, will return the possible range of Stephanus numbers. For example, 
+# Other Options: Stephanus Numbers
+The Stephanus number may be exact (number plus letter) or inexact (number only). Running platoTexts("apology", "17") will return all texts in that number range, not the text from the more exact sections 17a, 17b, 17c, 17d, or 17e.
+
+# Other Options: Dialogues
+Simply typing in the dialogue name, without any Stephanus number, will return the possible range of Stephanus numbers. For example, 
 ```javascript
 console.log(platoTexts("apology"));
 ```
 Returns: 
   * "Apology: 17a-42a (possible search range)"
 
-* Likewise, typing in the dialogue name followed by "range" in the second argument will return the possible range of Stephanus numbers. For example, 
+Likewise, typing in the dialogue name followed by "range" in the second argument will return the possible range of Stephanus numbers. For example, 
 ```javascript
 console.log(platoTexts("apology," "range"));
 ```
 Returns:
   * "Apology: 17a-42a (possible search range)"
 
-* The Stephanus number may be exact (number plus letter) or inexact (number only). Running platoTexts("apology", "17") will return all texts in that number range, not the specific section 17a, 17b, 17c, 17d, or 17e.
-
-* All dialogues may be abbreviated. For example, the following are all equivalent expressions:
+All dialogues may be abbreviated. For example, the following are all equivalent expressions:
 ```javascript
 console.log(platoTexts("apology", "17a"));
 console.log(platoTexts("apol.", "17a"));
@@ -47,7 +48,7 @@ console.log(platoTexts("apo.", "17a"));
 console.log(platoTexts("apo", "17a"));
 ```
 
-* Running the "all" command as the only argument returns an array of all dialogues and their possible Stephanus ranges.
+Running the "all" command as the only argument returns an array of all dialogues and their possible Stephanus ranges.
 ```javascript
 console.log(platoTexts("all"));
 ```
@@ -87,4 +88,4 @@ Returns:
   * "Symposium: 172a-223d",
   * "Theaetetus: 142a-210d",
   * "Theages: 121a-131a",
-  * "Timaeus: 17a-92c"]
+  * "Timaeus: 17a-92c"
