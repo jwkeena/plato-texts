@@ -1,7 +1,7 @@
 {
   "name": "plato-texts",
-  "version": "1.0.0",
-  "description": "An npm package to extract specific texts from Plato in the Scaife Viewer (Perseus Project 5.0).",
+  "version": "1.0.1",
+  "description": "An npm package to extract specific texts from Plato in the Scaife Viewer API (Perseus Project 5.0).",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +9,10 @@
   "keywords": [
     "plato",
     "philosophy",
-    "greek"
+    "greek",
+    "scaife viewer",
+    "perseus",
+    "perseus project"
   ],
   "author": "Justin Keena",
   "license": "ISC",
