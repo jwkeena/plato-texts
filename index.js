@@ -1,13 +1,5 @@
 const https = require('https');
 const xmldoc = require("xmldoc");
-const userDialogue = process.argv[2].toLowerCase().trim();
-let userStephanus;
-
-if (process.argv[3]) {
-    userStephanus = process.argv[3].toLowerCase().trim();
-} else {
-    userStephanus = "NONE";
-}
 
 function getPlatoText(userDialogue, userStephanus) {
     let lastChar = userStephanus[userStephanus.length - 1];
@@ -604,5 +596,15 @@ function getPlatoText(userDialogue, userStephanus) {
         return ("Error: " + err.message);
     });
 }
+
+// For testing
+// let userStephanus;
+// const userDialogue = process.argv[2].toLowerCase().trim();
+// if (process.argv[3]) {
+//     userStephanus = process.argv[3].toLowerCase().trim();
+// } else {
+//     userStephanus = "NONE";
+// }
+// getPlatoText(userDialogue, userStephanus);
 
 module.exports = getPlatoText;

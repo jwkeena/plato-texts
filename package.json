@@ -1,6 +1,6 @@
 {
   "name": "plato-texts",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "An npm package to extract specific texts from Plato in the Scaife Viewer API (Perseus Project 5.0).",
   "main": "index.js",
   "scripts": {
@@ -15,6 +15,11 @@
     "perseus project"
   ],
   "author": "Justin Keena",
+  "homepage": "https://github.com/jwkeena/plato-texts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jwkeena/plato-texts.git"
+  },
   "license": "ISC",
   "dependencies": {
     "xmldoc": "^1.1.2",
