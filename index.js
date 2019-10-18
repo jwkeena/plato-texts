@@ -29,11 +29,9 @@ function getPlatoText(userDialogue, userStephanus) {
     let perseusDialogueMarker = "tlg0"
     switch (userDialogue) {
         case "all":
-            // Return array of all dialogue names and ranges
             const allStephanusRanges = ["Alcibiades I: 103a-135e", "Alcibiades II: 138a-151c", "Apology: 17a-42a", "Charmides: 153a-176d", "Clitophon: 406a-410e", "Cratylus: 383a-440e", "Critias: 106a-121c", "Crito: 43a-54e", "Epinomis: 973a-992e", "Euthydemus: 271a-307c", "Euthyphro: 2a-16a", "Gorgias: 447a-527e", "Hipparchus: 225a-232c", "Hippias Major: 281a-304e", "Hippias Minor: 363a-376c", "Ion: 530a-542b", "Laches: 178a-201c", "Laws: 1.624a-650b", "Lysis: 203a-223b", "Menexenus: 234a-249e", "Meno: 70a-100b", "Minos: 313a-321d", "Parmenides: 126a-166c", "Phaedo: 57a-118a", "Phaedrus: 227a-279c", "Philebus: 11a-67b", "Protagoras: 309a-362a", "Republic: 327a-621d", "Rival Lovers: 132a-139a", "Seventh Letter: 7.323d-7.352a", "Sophist: 216a-268d", "Statesman: 257a-311c", "Symposium: 172a-223d", "Theaetetus: 142a-210d", "Theages: 121a-131a", "Timaeus: 17a-92c"]
             console.log(allStephanusRanges)
             return allStephanusRanges;
-            break;
 
         case "alcibiadesi":
         case "alcibiadesI":
@@ -606,7 +604,5 @@ function getPlatoText(userDialogue, userStephanus) {
         return ("Error: " + err.message);
     });
 }
-
-getPlatoText(userDialogue, userStephanus);
 
 module.exports = getPlatoText;
