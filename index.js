@@ -575,7 +575,7 @@ function getPlatoText(userDialogue, userStephanus) {
             let singleTextFound = {};
             // Depending on the type of search input, either give a single section or a whole section
             if (userStephanusLetter && typeOfResult === "book") {
-                singleTextFound["passageRequested"] = dialogueName + " " + userStephanus;
+                singleTextFound["passageRequested"] = dialogueName + " " + userStephanus + userStephanusLetter;
                 singleTextFound["URL"] = queryURL;
 
                 // Removes book number and period from userStephanus
@@ -586,27 +586,30 @@ function getPlatoText(userDialogue, userStephanus) {
                 }
         
                 singleTextFound[userStephanus + userStephanusLetter] = textsFound[userStephanus + userStephanusLetter];
+                // console.log (singleTextFound);
                 return (singleTextFound);
 
             } else if (userStephanusLetter) {
-                singleTextFound["passageRequested"] = dialogueName + " " + userStephanus;
+                singleTextFound["passageRequested"] = dialogueName + " " + userStephanus + userStephanusLetter;
                 singleTextFound["URL"] = queryURL;
                 singleTextFound[userStephanus + userStephanusLetter] = textsFound[userStephanus + userStephanusLetter];
+                // console.log (singleTextFound);
                 return (singleTextFound);
                 
             } else {
                 // return entire stephanus number
+                // console.log(textsFound);
                 return textsFound;
             }
         });
 
     }).on("error", (err) => {
-        return ("Text unable to be retrieved. Check Stephanus range and query URL.");
+        return (err);
     });
 }
 
 // For testing
-let userStephanus;
+// let userStephanus;
 // const userDialogue = process.argv[2].toLowerCase().trim();
 // if (process.argv[3]) {
 //     userStephanus = process.argv[3].toLowerCase().trim();
