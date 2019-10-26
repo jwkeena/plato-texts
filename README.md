@@ -1,5 +1,5 @@
 # plato-texts
-A node package for retrieving the texts of Plato from the Scaife Viewer API.
+A node package for retrieving the Greek texts of Plato from the Scaife Viewer API.
 
 # Intalling
 Using npm:
@@ -8,7 +8,7 @@ npm i plato-texts
 ```
 
 # How to Use
-This tool exposes a single function, getPlatoText, which accepts two arguments, each of them strings: first, the dialogue name, which is required; second, the Stephanus number and section, which is optional.  
+This tool exposes a single function, getPlatoText, which accepts two arguments, each of them strings: first, the dialogue name, which is required; second, the Stephanus number and section, which is optional.
 
 # Example Usage
 ```javascript
@@ -16,7 +16,7 @@ const platoTexts = require("plato-texts");
 
 console.log(platoTexts("apology", "17a"))
 ```
-Returns: 
+Returns : 
   * ὅτι μὲν ὑμεῖς, ὦ ἄνδρες Ἀθηναῖοι, πεπόνθατε ὑπὸ τῶν ἐμῶν κατηγόρων, οὐκ οἶδα· ἐγὼ δʼ οὖν καὶ αὐτὸς ὑπʼ αὐτῶν ὀλίγου ἐμαυτοῦ ἐπελαθόμην, οὕτω πιθανῶς ἔλεγον. καίτοι ἀληθές γε ὡς ἔπος εἰπεῖν οὐδὲν εἰρήκασιν. μάλιστα δὲ αὐτῶν ἓν ἐθαύμασα τῶν πολλῶν ὧν ἐψεύσαντο, τοῦτο ἐν ᾧ ἔλεγον ὡς χρῆν ὑμᾶς εὐλαβεῖσθαι μὴ ὑπʼ ἐμοῦ ἐξαπατηθῆτε
   * Passage requested: Apology 17a at https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg002.perseus-grc2:17
 

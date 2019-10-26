@@ -13,7 +13,6 @@ function getPlatoText(userDialogue, userStephanus) {
         userStephanusLetter = lastChar;
     } else {
         if (isNaN(lastChar) && userStephanus !== "NONE") {
-            console.log("Search only accepts a-e in final Stephanus position; canceling search.");
             return "Search only accepts a-e in final Stephanus position; canceling search.";
         }
     }
@@ -22,7 +21,6 @@ function getPlatoText(userDialogue, userStephanus) {
     switch (userDialogue) {
         case "all":
             const allStephanusRanges = ["Alcibiades I: 103a-135e", "Alcibiades II: 138a-151c", "Apology: 17a-42a", "Charmides: 153a-176d", "Clitophon: 406a-410e", "Cratylus: 383a-440e", "Critias: 106a-121c", "Crito: 43a-54e", "Epinomis: 973a-992e", "Euthydemus: 271a-307c", "Euthyphro: 2a-16a", "Gorgias: 447a-527e", "Hipparchus: 225a-232c", "Hippias Major: 281a-304e", "Hippias Minor: 363a-376c", "Ion: 530a-542b", "Laches: 178a-201c", "Laws: 1.624a-650b", "Lysis: 203a-223b", "Menexenus: 234a-249e", "Meno: 70a-100b", "Minos: 313a-321d", "Parmenides: 126a-166c", "Phaedo: 57a-118a", "Phaedrus: 227a-279c", "Philebus: 11a-67b", "Protagoras: 309a-362a", "Republic: 327a-621d", "Rival Lovers: 132a-139a", "Seventh Letter: 7.323d-7.352a", "Sophist: 216a-268d", "Statesman: 257a-311c", "Symposium: 172a-223d", "Theaetetus: 142a-210d", "Theages: 121a-131a", "Timaeus: 17a-92c"]
-            console.log(allStephanusRanges)
             return allStephanusRanges;
 
         case "alcibiadesi":
@@ -361,13 +359,11 @@ function getPlatoText(userDialogue, userStephanus) {
             dialogueName = "Timaeus";
             break;
         default:
-            console.log("Dialogue not recognized; canceling request.");
             return "Dialogue not recognized; canceling request.";
     }
 
     // Display dialogue range of references if the user doesn't request a specific passage
     if (userStephanus === "NONE" || userStephanus === "rang") {
-        console.log(stephanusRange + " (possible search range)");
         return stephanusRange + " (possible search range)";
     }
 
@@ -384,11 +380,13 @@ function getPlatoText(userDialogue, userStephanus) {
     // Adding stephanus chosen to url
     queryURL += userStephanus;
 
-    // async https request using module built-in to node
+    // https request using module built-in to node
     https.get(queryURL, (resp) => {
 
         // Temp object to store results of async call in
-        let textsFound = [];
+        let textsFound = {};
+        textsFound["passageRequested"] = dialogueName + " " + userStephanus;
+        textsFound["URL"] = queryURL;
         let currentStephanus;
         let typeOfResult;
         let data = '';
@@ -414,7 +412,7 @@ function getPlatoText(userDialogue, userStephanus) {
                 typeOfResult = "section"
                 result = document.childNamed("reply").childNamed("passage").childNamed("TEI").childNamed("text").childNamed("body").childNamed("div").childNamed("div");
             } else {
-                console.log("unknown organization found", result.childWithAttribute("subtype").attr.subtype);
+                return ("unknown organization found", result.childWithAttribute("subtype").attr.subtype);
             }
 
             // extract info (text, speakers, stephanus numbers) from each paragraph
@@ -574,31 +572,41 @@ function getPlatoText(userDialogue, userStephanus) {
                 }
             }
 
+            let singleTextFound = {};
             // Depending on the type of search input, either give a single section or a whole section
             if (userStephanusLetter && typeOfResult === "book") {
-                console.log(textsFound[userStephanus + userStephanusLetter])
-                console.log("Passage requested: " + dialogueName + " " + userStephanus + userStephanusLetter + " at " + queryURL)
-                return (textsFound[userStephanus + userStephanusLetter])
+                singleTextFound["passageRequested"] = dialogueName + " " + userStephanus;
+                singleTextFound["URL"] = queryURL;
+
+                // Removes book number and period from userStephanus
+                if (userStephanus.charAt(2) === ".") { // Remove three characters if it's a double digit book
+                    userStephanus = userStephanus.slice(3)
+                } else if (userStephanus.charAt(1) === ".") {
+                    userStephanus = userStephanus.slice(2) // Remove only two characters if it's a single digit book
+                }
+        
+                singleTextFound[userStephanus + userStephanusLetter] = textsFound[userStephanus + userStephanusLetter];
+                return (singleTextFound);
+
             } else if (userStephanusLetter) {
-                console.log(textsFound[userStephanus + userStephanusLetter])
-                console.log("Passage requested: " + dialogueName + " " + userStephanus + userStephanusLetter + " at " + queryURL)
-                return (textsFound[userStephanus + userStephanusLetter])
+                singleTextFound["passageRequested"] = dialogueName + " " + userStephanus;
+                singleTextFound["URL"] = queryURL;
+                singleTextFound[userStephanus + userStephanusLetter] = textsFound[userStephanus + userStephanusLetter];
+                return (singleTextFound);
+                
             } else {
                 // return entire stephanus number
-                console.log(textsFound);
-                console.log("Passage requested: " + dialogueName + " " + userStephanus + " at " + queryURL)
                 return textsFound;
             }
         });
 
     }).on("error", (err) => {
-        console.log("Error: " + err.message);
-        return ("Error: " + err.message);
+        return ("Text unable to be retrieved. Check Stephanus range and query URL.");
     });
 }
 
 // For testing
-// let userStephanus;
+let userStephanus;
 // const userDialogue = process.argv[2].toLowerCase().trim();
 // if (process.argv[3]) {
 //     userStephanus = process.argv[3].toLowerCase().trim();

@@ -1,6 +1,6 @@
 {
   "name": "plato-texts",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "An npm package to extract specific texts from Plato in the Scaife Viewer API (Perseus Project 5.0).",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,8 @@
     "greek",
     "scaife viewer",
     "perseus",
-    "perseus project"
+    "perseus project",
+    "ancient greek"
   ],
   "author": "Justin Keena",
   "homepage": "https://github.com/jwkeena/plato-texts",
