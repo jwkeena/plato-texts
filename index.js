@@ -416,7 +416,7 @@ function getPlatoText(userDialogue, userStephanus) {
                 // cut directly to the relevant parts of xml response
                 let result = document.childNamed("reply").childNamed("passage").childNamed("TEI").childNamed("text").childNamed("body").childNamed("div");
     
-                if (result === undefined) {
+                if (result === undefined)
                     return resolve ("Text not found. Check dialogue spelling, stephanus number range, or prefix book before stephanus argument.")
 
                 // check for book
