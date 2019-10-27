@@ -400,6 +400,7 @@ function getPlatoText(userDialogue, userStephanus) {
             let currentStephanus = "";
             let typeOfResult = "";
             let data = '';
+            let previousLabel = "";
     
             // A chunk of data has been recieved
             resp.on('data', (chunk) => {
@@ -429,7 +430,7 @@ function getPlatoText(userDialogue, userStephanus) {
                     typeOfResult = "section"
                     result = document.childNamed("reply").childNamed("passage").childNamed("TEI").childNamed("text").childNamed("body").childNamed("div").childNamed("div");
                 } else {
-                    return resolve ("unknown organization found", result.childWithAttribute("subtype").attr.subtype);
+                    return resolve ("Unknown organization found. Email jwkeena@gmail.com with your URL request, dialogue, and stephanus number.", result.childWithAttribute("subtype").attr.subtype);
                 }
     
                 // extract info (text, speakers, stephanus numbers) from each paragraph
@@ -445,8 +446,19 @@ function getPlatoText(userDialogue, userStephanus) {
                         speaker = speaker.slice(1)
                         // extract label for speaker, if there is one; attach this to the text found
                         let label;
+                        let newLabelFound = false
                         if (textWithSpeaker.childNamed("label")) {
                             label = textWithSpeaker.childNamed("label").val
+                            if (previousLabel === "") {
+                                previousLabel = label
+                            }
+
+                            console.log(label, previousLabel)
+                            // overwrite previousLabel only if it's a new one
+                            if (label !== previousLabel) {
+                                previousLabel = label
+                                newLabelFound = !newLabelFound
+                            }
                         };
     
                         // Extract new stephanus milestone, if there are any
@@ -459,6 +471,33 @@ function getPlatoText(userDialogue, userStephanus) {
                                 if (allChildren[j].attr.unit === "section") {
                                     const stephanus = allChildren[j].attr.n;
                                     currentStephanus = stephanus;
+                                }
+
+                                // Check for proper name, place name, del node text
+                                if (allChildren[j].name === "persName" || allChildren[j].name === "name" || allChildren[j].name === "placeName" || allChildren[j].name === "del") {
+
+                                    // concatenate name to what's already in textsFound; otherwise, create new key value pair
+                                    let newText = allChildren[j].val;
+                                    newText = newText.replace(/(\r\n|\n|\r)/gm, "");
+
+                                    if (textsFound[currentStephanus]) {
+                                        textsFound[currentStephanus] += newText.trim() + " ";
+                                    } else {
+                                        if (currentStephanus === undefined) {
+                                            // Removes book number and period from search
+                                            if (userStephanus.charAt(2) === ".") {
+                                                userStephanus = userStephanus.slice(3) // Cuts out both digits and period if it's book 10, 11, or 12
+                                            } else if (userStephanus.length > 1 && typeOfResult === "book") { // Doesn't touch single numbers, e.g. in Euthyphro
+                                                userStephanus = userStephanus.slice(2)
+                                            }
+
+                                            // Calculate what the previous stephanus number is, immediately prior to user search
+                                            currentStephanus = ((parseInt(userStephanus) - 1)) + "e";
+                                            textsFound[currentStephanus] = newText.trim();
+                                        } else {
+                                            textsFound[currentStephanus] = newText.trim();
+                                        }
+                                    }
                                 }
     
                                 // Check if there's a q node, check for new section and text
@@ -477,7 +516,7 @@ function getPlatoText(userDialogue, userStephanus) {
                                             }
                                         }
     
-                                        // If it's a text node, capture the text (REFACTOR AS FUNCTION, THIS CODE IS REPEATED THREE TIMES)
+                                        // If it's a text node, capture the text (REFACTOR AS FUNCTION, THIS CODE IS REPEATED TOO MANY TIMES)
                                         if (allNestedChildren[k].text) {
                                             let newText;
     
@@ -515,9 +554,12 @@ function getPlatoText(userDialogue, userStephanus) {
                             if (allChildren[j].text) {
                                 
                                 let newText;
-                                // Concatenate label to text, if there is a label
-                                if (label) {
+                                // Concatenate label to text, if there is a label AND it's not the most recent addition to the label
+                                if (label && !textsFound[currentStephanus]) {
                                     newText = label.trim() + " " + allChildren[j].text.trim();
+                                } else if (label && newLabelFound) {
+                                    newText = label.trim() + " " + allChildren[j].text.trim();
+                                    newLabelFound = !newLabelFound;
                                 } else {
                                     newText = allChildren[j].text.trim();
                                 }
@@ -558,6 +600,33 @@ function getPlatoText(userDialogue, userStephanus) {
                                 if (allChildren[j].attr.unit === "section") {
                                     const stephanus = allChildren[j].attr.n;
                                     currentStephanus = stephanus;
+                                }
+                            }
+
+                            // Check for proper name, place name, del node text
+                            if (allChildren[j].name === "persName" || allChildren[j].name === "name" || allChildren[j].name === "placeName" || allChildren[j].name === "del") {
+
+                                // concatenate name to what's already in textsFound; otherwise, create new key value pair
+                                let newText = allChildren[j].val;
+                                newText = newText.replace(/(\r\n|\n|\r)/gm, "");
+
+                                if (textsFound[currentStephanus]) {
+                                    textsFound[currentStephanus] += newText.trim() + " ";
+                                } else {
+                                    if (currentStephanus === undefined) {
+                                        // Removes book number and period from search
+                                        if (userStephanus.charAt(2) === ".") {
+                                            userStephanus = userStephanus.slice(3) // Cuts out both digits and period if it's book 10, 11, or 12
+                                        } else if (userStephanus.length > 1 && typeOfResult === "book") { // Doesn't touch single numbers, e.g. in Euthyphro
+                                            userStephanus = userStephanus.slice(2)
+                                        }
+
+                                        // Calculate what the previous stephanus number is, immediately prior to user search
+                                        currentStephanus = ((parseInt(userStephanus) - 1)) + "e";
+                                        textsFound[currentStephanus] = newText.trim();
+                                    } else {
+                                        textsFound[currentStephanus] = newText.trim();
+                                    }
                                 }
                             }
     
