@@ -1,6 +1,6 @@
 {
   "name": "plato-texts",
-  "version": "1.2.1",
+  "version": "1.2.7",
   "description": "A promise-based node package for retrieving the Greek texts of Plato from the Scaife Viewer API (Perseus Project 5.0).",
   "main": "index.js",
   "scripts": {

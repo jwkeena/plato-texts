@@ -409,12 +409,15 @@ function getPlatoText(userDialogue, userStephanus) {
             // The whole response has been received
             resp.on('end', () => {
                 const document = new xmldoc.XmlDocument(data); // to pretty print xmldoc parsing of data: console.log(document.toString({trimmed: true}));
+
+                if (document === undefined || document.childNamed("reply") === undefined || document.childNamed("reply").childNamed("passage") === undefined)
+                    return resolve ("Text not found. Check dialogue spelling, stephanus number range, or prefix book before stephanus argument.")
+
                 // cut directly to the relevant parts of xml response
                 let result = document.childNamed("reply").childNamed("passage").childNamed("TEI").childNamed("text").childNamed("body").childNamed("div");
     
                 if (result === undefined) {
                     return resolve ("Text not found. Check dialogue spelling, stephanus number range, or prefix book before stephanus argument.")
-                }
 
                 // check for book
                 if (result.childWithAttribute("subtype").attr.subtype === "book") {
