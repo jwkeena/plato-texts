@@ -30,7 +30,7 @@ Returns :
   passageRequested: 'Euthyphro 2a',
   URL: 'https://scaife-cts.perseus.org/api/cts?request=GetPassage&urn=urn:cts:greekLit:tlg0059.tlg001.perseus-grc1:2',
   '2a': 'ΕΥΘ. τί νεώτερον, ὦ Σώκρατες, γέγονεν, ὅτι σὺ τὰς ἐν Λυκείῳ καταλιπὼν διατριβὰς ἐνθάδε νῦν διατρίβεις περὶ τὴν τοῦ βασιλέως στοάν; οὐ γάρ που καὶ σοί γε δίκη τις οὖσα τυγχάνει πρὸς τὸν βασιλέα ὥσπερ ἐμοί.ΣΩ. οὔτοι δὴ Ἀθηναῖοί γε, ὦ Εὐθύφρων, δίκην αὐτὴν καλοῦσιν ἀλλὰ γραφήν. ' 
-  }
+}
 ```
 
 # Book-based Dialogues
